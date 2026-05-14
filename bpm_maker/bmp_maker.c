@@ -1,0 +1,194 @@
+#include <SDL2_	SDL.H>
+#include <string.h>
+#include "../bmp_component/bmp_structure.h"
+
+
+
+int one_bit_pixel(uint8_t *user_pixel_data , int total_pixel , struct  bmp_pixeldata *pixel_data_holder){
+	number_of_bytes =  (total_pixel + 7) /  8 ;
+
+	pixel_data_holder->pixel_data = (uint8_t *) malloc(number_of_bytes);
+
+	uint8_t *pixel_data  = pixel_data_holder->pixel_data ;
+
+	int byte_index ;
+	int bit_index ;
+
+	for(int i = 0 , i < total_pixel ; i++){
+		byte_index =  i / 8 ;
+		bit_index  = i % 8 ;
+
+		if(user_pixel_data[i] == 1){
+			pixel_data[byte_index] |= (1<<bit_index);
+			printf("bit flipped \n");
+		};
+	};
+
+	printf("OPERATION PERFORMED \n");
+
+	return 1;
+
+};
+
+int two_bit_pixel(uint8_t *user_pixel_data){
+};
+
+int four_bit_pixel(uint8_t *user_pixel_data){
+};
+
+int eight_bit_pixel(uint8_t *user_pixel_data){
+};
+
+int user_pixel_input(uint8_t *user_pixel_data , uint32_t  bitcount_pixel ,  struct bmp_infoheader infoheader , struct  bmp_pixeldata pixel_data_holder){
+	printf("ENTER THE PIXEL DATA");
+	int presentor ;
+
+	presentor =  pallet_table_printer();
+	uint32_t width , height ;
+	width =  bmp_infoheader.image_width;
+	height =  bmp_infoheader.image_height ;
+
+	int total_pixel  =  widht * height * bitcount_pixel ; 
+	uint8_t spixel ;
+	char input_pixel[100];
+
+	for(int i = 0 ; i<=total_pixel ; i++){
+		printf("ENTER THE COLOUR BIT \n");
+		if(fgets(input_pixel,sizeof(input_pixel),stdin)){
+			perror("INPUT ERROR \n");
+			return -1;
+		};
+
+		spixel =  strtol(input_pixel,NULL,10);
+
+		if(bitcount_pixel ==  1){
+			spixel =  (spixel>0) ? 1 : 0 ;
+			user_pixel_data[i] = spixel ;
+			printf("SAVED\n");
+		};
+
+		if(bitcount_pixel == 2 ){
+			spixel =  (spixel >3 ) ? 3 : spixel ;
+			user_pixel_data[i] = spixel ;
+			printf("SAVED \n");
+		};
+
+		if(bitcount_pixel == 4 ){
+			spixel =  (spixel >15 ) ? 15 : spixel ;
+			user_pixel_data[i] = spixel ;
+			printf("SAVED \n");
+		};
+
+		if(bitcount_pixel == 8 ){
+			spixel =  (spixel >255 ) ? 255 : spixel ;
+			user_pixel_data[i] = spixel ;
+			printf("SAVED \n");
+		};
+	};
+
+	printf("PIXEL DATA CREATED \n");
+
+	if(bitcount_pixel == 1){
+		result = one_bit_pixel(user_pixel_data, total_pixel, pixel_data_holder);
+		if(result<0){
+			printf("OPERATION FAILED \n");
+			return -1;
+		};
+		printf("OPERATION SUCCESSFUL \n");
+	}else if(bitcount_pixel == 2 ){
+		result = two_bit_pixel(user_pixel_data , total_pixel );
+		if(result<0){
+			printf("OPERATION FAILED \n");
+			return -1;
+		};
+		printf("OPERATION SUCCESSFUL \n");
+	}else if(bitcount_pixel == 4 ){
+		result = four_bit_pixel(user_pixel_data ,  total_pixel );
+		if(result<0){
+			printf("OPERATION FAILED \n");
+			return -1;
+		};
+		printf("OPERATION SUCCESSFUL \n");
+	}else if(bitcount_pixel == 8 ){
+		result = eight_bit_pixel(user_pixel_data ,  total_pixel);
+		if(result<0){
+			printf("OPERATION FAILED \n");
+			return -1;
+		};
+		printf("OPERATION SUCCESSFUL \n");
+	}else{
+		printf("16 / 24 / 32 BIT  color scheme understand dev \n");
+		return -1 ;
+	};
+
+	printf("PIXEL DATA HAS BEEN MADE \n");
+
+	return 0;
+
+};
+
+int bmp_dibheader_creator(uint32_t bitcount_pixel , struct bmp_infoheader *bmp_infoheader){
+	printf("CREATING THE DIB HEADER \n");
+
+	uint32_t  width , height ;
+
+	if(!fgets(usr_input,sizeof(usr_input,stdin))){
+			perror("INPUT ERROR \n");
+			return -1;
+	};
+	width  = strtol(usr_input,NULL,10);
+
+	if(!fgets(usr_input,sizeof(usr_input,stdin))){
+			perror("INPUT ERROR \n");
+			return -1;
+	};
+	height =  strtol(usr_input,NULL,10);
+
+	bmp_infohrader->dib_size = 40 ;
+	bmp_infoheader->image_width = width ;
+	bmp_infoheader->image_height = height ;
+	bmp_infoheader->bmp_planes = 1 ;
+	bmp_infoheader->bmp_compression = 0;
+	bmp_infoheader->bmp_bitdepth = bitcount_pixel;
+	bmp_infoheader->bmp_xppm = 0;
+	bmp_infoheader->bmp_yppm  = 0 ;
+	bmp_infoheader->bmp_colorused = 0;
+	bmp_infoheader->bmp_colorimportant = 0;
+
+	printf("DIB HEADER SAVED \n");
+};
+
+
+int main(){
+	uint32_t bitcount_pixel ;
+	char usr_input[1024];
+	int result ;
+        struct  bmp_pixeldata pixel_data_holder;
+	printf("STARTING THE PROCESS .... \n");
+
+	printf("ENTER THE SIZE PER BIT OF THE PIXEL \n");
+	if(!fgets(usr_input,sizeof(usr_input),stdin)){
+		perror("INPUT ERROR \n");
+		return -1;
+	};
+
+	bitcount_pixel = strtol(usr_input,NULL,10);
+	if(bitcount_pixel == usr_input){
+		perror("conversion error \n");
+		return -1;
+	};
+
+	struct bmp_infoheader bmp_infoheader ;
+	result = bmp_dibheader_creator(&bmp_infoheader , bitcount_pixel);
+	if(result <0){
+		printf("OPERATION FAILED \n");
+		return -1;
+	};
+	printf("operation completed \n");
+
+	struct pixel_pallet pixel_data[bitcount_pixel] ;
+	uint8_t *user_pixel_data;
+
+	result =  user_pixel_input(user_pixel_data , bmp_infoheader,pixel_data_holder);
+};
+
