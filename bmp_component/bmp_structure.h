@@ -42,10 +42,8 @@ struct bmp_infoheader{
 	uint32_t bmp_colorimportant ; 
 };
 
-
-
 struct bmp_pixeldata{
-	void *pixel_data[];
+	uint8_t *pixel_data;
 };
 
 #pragma pack(pop)
