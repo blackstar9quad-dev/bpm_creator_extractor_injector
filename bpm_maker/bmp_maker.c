@@ -4,17 +4,20 @@
 
 
 
-int one_bit_pixel(uint8_t *user_pixel_data , int total_pixel , struct  bmp_pixeldata *pixel_data_holder){
-	number_of_bytes =  (total_pixel + 7) /  8 ;
+int one_bit_pixel(uint8_t *user_pixel_data , int total_bits , struct  bmp_pixeldata *pixel_data_holder){
+	number_of_bytes =  (total_bits + 7) /  8 ;
 
 	pixel_data_holder->pixel_data = (uint8_t *) malloc(number_of_bytes);
 
 	uint8_t *pixel_data  = pixel_data_holder->pixel_data ;
 
+	memset(pixel_data , 0 , number_of_bytes);
+
+
 	int byte_index ;
 	int bit_index ;
 
-	for(int i = 0 , i < total_pixel ; i++){
+	for(int i = 0 ; i < total_bits ; i++){
 		byte_index =  i / 8 ;
 		bit_index  = i % 8 ;
 
@@ -30,13 +33,81 @@ int one_bit_pixel(uint8_t *user_pixel_data , int total_pixel , struct  bmp_pixel
 
 };
 
-int two_bit_pixel(uint8_t *user_pixel_data){
+int two_bit_pixel(uint8_t *user_pixel_data , int totalpixel , struct bmp_pixeldata *pixel_data_holder)
+{
+	int total_bits =  total_pixel *  2 ;
+	int number_of_bytes =  (total_bits+7) / 8 ; 
+
+	pixel_data_holder->pixel_data =  (uint8_t *) malloc(number_of_bytes);
+	uint8_t *pixel_data =  pixel_data_holder->pixel_data ;
+
+	memset(pixel_data , 0 , number_of_bytes );
+
+	int bit_index , slot , shift ;
+
+	for(int i =0 ; i < total_pixel ; i++){
+		byte_index =  i / 4 ;
+
+		slot = i % 4 ;       //out of the 4 slots wehich we are working onn
+
+		shift =  slot * 2 ; // this the start bit 
+
+		pixel_data[byte_index] |= (user_pixel_data[i] << shift);
+
+		printf("slot edit performed \n");
+		
+	};
+
+	printf("OPRATION COMPLETE \n");
+
+	return 1;
 };
 
-int four_bit_pixel(uint8_t *user_pixel_data){
+int four_bit_pixel(uint8_t *user_pixel_data , int totalpixel , struct bmp_pixeldata *pixel_data_holder ){
+	int total_bits = totalpixel * 4 ;
+	int number_of_bytes ; 
+	number_of_bytes = (total_bits+7)/8;
+
+	pixel_data_holder->pixel_data =  (uint8_t *)malloc(number_of_bytes);
+
+	uint8_t *pixel_data  =  pixel_data_holder->pixel_data;
+
+	memset(pixel_data,0,number_of_bytes);
+
+	for(int i = 0 ; i<=totalpixel ; i++){
+		byte_index = i / 2 ;
+
+		slot =  i % 2 ;
+
+		shift =  slot * 4 ;
+
+		pixel_data[byte_index] |=  (user_pixel_data << shift);
+
+		printf("SLOT CHANGED \n");
+	};
+
+	printf("OPERATION COMPLETED \n");
+
+	return 1 ;
 };
 
-int eight_bit_pixel(uint8_t *user_pixel_data){
+int eight_bit_pixel(uint8_t *user_pixel_data ,  int totalpixel , struct bmp_pixeldata *pixel_data_holder){
+	int number_of_bytes =  totalpixel ;
+
+	pixel_data_holder->pixel_data =  (uint8_t *)malloc(number_of_bytes);
+
+	uint8_t *pixel_data = pixel_data_holder->pixel_data
+	memeset(pixel_data,0,number_of_bytes);
+
+	for(int i = 0 ; i<totalpixel ; i++){
+		pixel_data =  user_pixel_data[i];
+
+		printf("PIXEL  DATA SAVED \n");
+	};
+
+	printf("OPERATION PERFORMED \n");
+
+	return -1;
 };
 
 int user_pixel_input(uint8_t *user_pixel_data , uint32_t  bitcount_pixel ,  struct bmp_infoheader infoheader , struct  bmp_pixeldata pixel_data_holder){
@@ -48,7 +119,9 @@ int user_pixel_input(uint8_t *user_pixel_data , uint32_t  bitcount_pixel ,  stru
 	width =  bmp_infoheader.image_width;
 	height =  bmp_infoheader.image_height ;
 
-	int total_pixel  =  widht * height * bitcount_pixel ; 
+	int total_pixel ;
+	total_pixel =  width *  height ;
+
 	uint8_t spixel ;
 	char input_pixel[100];
 
@@ -88,14 +161,17 @@ int user_pixel_input(uint8_t *user_pixel_data , uint32_t  bitcount_pixel ,  stru
 
 	printf("PIXEL DATA CREATED \n");
 
-	if(bitcount_pixel == 1){
-		result = one_bit_pixel(user_pixel_data, total_pixel, pixel_data_holder);
+	int total_bits ;
+	if(bitcount_pixel == 1){  // need to change the total_pixel name to total_bits ;
+		int  total_bits  =  widht * height * bitcount_pixel ; 
+		result = one_bit_pixel(user_pixel_data, total_bits, pixel_data_holder);
 		if(result<0){
 			printf("OPERATION FAILED \n");
 			return -1;
 		};
 		printf("OPERATION SUCCESSFUL \n");
 	}else if(bitcount_pixel == 2 ){
+		int  total_bits  =  widht * height / 2   ; 
 		result = two_bit_pixel(user_pixel_data , total_pixel );
 		if(result<0){
 			printf("OPERATION FAILED \n");
