@@ -3,41 +3,6 @@
 #include "../bmp_component/bmp_structure.h"
 
 
-int randomizor( struct bmp_pixeldata *user_pixel_data){
-};
-
-int manual_input( struct bmp_pixeldata *user_pixel_data){
-};
-
-int user_pixel_creator( uint8_t *user_pixel_data){
-	char choice[10] ;
-
-	printf("STARTING THE CRETION OF THE USER PIXEL DATA \n");
-	printf("DO U WANNA CREATE AT RANDOM OR INPUT MANUALY (r/m) \n");
-	if(!fgets(choice,sizeof(choice),stdin)){
-		perror("INPUT ERROR \n");
-		return -1;
-	};
-
-	if(strcmp(choice,"r") == 0){
-		if(randomizor(user_pixel_data) <0){
-			printf("OPERATION FAILED \n");
-			return -1 ;
-		};
-
-		printf("OPERATION SUCCESSFUL \n");
-		return 1;
-
-	}else if(strcmp(choice,"m") == 0){
-		if(manual_input(user_pixel_data) <0){
-			printf("OPERATION FAILED \n");
-			return -1;
-		};
-
-		printf("OPEARTION SUCCESSFUL \n");
-		return 1;
-	};
-};
 
 int one_bit_pixel(uint8_t *user_pixel_data , int total_bits , struct  bmp_pixeldata *pixel_data_holder){
 	number_of_bytes =  (total_bits + 7) /  8 ;
@@ -145,37 +110,17 @@ int eight_bit_pixel(uint8_t *user_pixel_data ,  int totalpixel , struct bmp_pixe
 	return -1;
 };
 
-int user_pixel_input(uint8_t *user_pixel_data , uint32_t  bitcount_pixel ,  struct bmp_infoheader infoheader , struct  bmp_pixeldata *pixel_data_holder){
+int user_pixel_input(uint8_t *user_pixel_data , uint32_t  bitcount_pixel ,  struct bmp_infoheader infoheader , struct  bmp_pixeldata pixel_data_holder){
 	printf("ENTER THE PIXEL DATA");
 	int presentor ;
 
+	//presentor =  pallet_table_printer(); //has to crate the table and should be used later on 
 	uint32_t width , height ;
 	width =  bmp_infoheader.image_width;
-	height =  bmp_infoheader.image_height ; 
+	height =  bmp_infoheader.image_height ;
 
-	uint32_t  total_pixel ;
+	int total_pixel ;
 	total_pixel =  width *  height ;
-
-
-	presentor =  gradient_maker(height , width , total_pixel);
-	if(presentor<0){
-		printf("OPERATION FAILED \n");
-		return -1 ;
-	};
-
-	if(pallet_printer() <0){
-		printf("OPERATION FAILED \n");
-		return -1;
-	};
-
-//before this we make the user choose the colors and we create the pallet table and then now after this we show the pallet table and then user can define the it's own pixel data 
-//
-
-	if(user_pixel_creator(user_pixel_data) <0){
-		printf("OPERATION  FAILED \n");
-		return -1;
-	};
-
 
 	uint8_t spixel ;
 	char input_pixel[100];
@@ -286,7 +231,9 @@ int main(){
 	};
 	printf("operation completed \n");
 
-	user_pixel_data = (uint8_t *)malloc(height * width)
-	result =  user_pixel_input(user_pixel_data , bitpixel_count , bmp_infoheader, &pixel_data_holder);
+	struct pixel_pallet pixel_data[bitcount_pixel] ;
+
+	user_pixel_data = (uint8_t *)malloc(bitcount_pixel)
+	result =  user_pixel_input(user_pixel_data , bmp_infoheader,pixel_data_holder);
 };
 

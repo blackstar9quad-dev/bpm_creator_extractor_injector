@@ -9,12 +9,12 @@
 
 
 
-int interactor(SDL_Event *event ,  int bitcount_pixel ){
+int interactor(SDL_Event *event ,  int bitpixel_count , struct pixel_rgb_value *pixel_data ){
 	printf("NOW IN THE INTERACTOR \n");
 	bool value =  true ;
 
 	int i = 0;
-	while(bitcount_pixel <=0){
+	while(i<bitpixel_count){
 		while(SDL_PollEvent(event) != 0){
 			if(event->type == SDL_QUIT){
 				value =  false ;
@@ -33,21 +33,21 @@ int interactor(SDL_Event *event ,  int bitcount_pixel ){
 						printf("VALUE NOT SAVED \n");
 						continue;
 					}else if(strcmp(choice,"y") == 0){
-						user_pixel_data[i].red = event.button.x;
-						user_pixel_data[i].green = event.button.y;
-						user_pixel.data[i].blue = 128;
-						printf("rgb value save at index : %d ", index);
+
+						pixel_data[i].red = event.button.x;
+						pixel_data[i].green =  event.button.y;
+						pixel_data[i].blue = 128;
+
+						printf("VALUES SAVED IN THE INDEX : %d ",i);
+
+						i+=1;
 
 						break;
-
 					};
-					break;
-				}
+				};
+				break;
 			}
 		};
-
-		bitcount_pixel = bitcount_pixel - 1 ;
-		i+=1;
 	};
 
 	return 1;
@@ -133,11 +133,13 @@ int parser(int argc , char *args[] ,  int *height , int *width , char name[100])
 
 
 
-int gradient_maker(int height , int width  , uint32_t total_pixel){
+int gradient_maker(int height , int width  , uint32_t total_pixel, uint32_t bitpixel_count){
 	SDL_Init(SDL_INIT_VIDEO);
 	printf("SDL INITLIZED \n");
 	//int height = 200 , width = 200 ;   // wouild come from the bmp file 
 	char name[] = "gradient";
+
+	pixel_data =  (struct pixel_rgb_value *)malloc(bitpixel_count);
 
     /*	if(parser(argc , args, &height , &width , name)<0){
 		printf("OPERATION FAILED \n");

@@ -48,7 +48,9 @@ struct pixel_rgb_value{
 	uint8_t blue ;
 };
 
-pixel_rgb_value *user_pixel_data[];
+pixel_rgb_value *pixel_data;
+
+uint8_t *user_pixel_data;
 
 struct bmp_pixeldata{
 	uint8_t *pixel_data;
