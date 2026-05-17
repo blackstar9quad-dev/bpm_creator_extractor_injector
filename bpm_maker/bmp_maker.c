@@ -114,7 +114,7 @@ int user_pixel_input(uint8_t *user_pixel_data , uint32_t  bitcount_pixel ,  stru
 	printf("ENTER THE PIXEL DATA");
 	int presentor ;
 
-	presentor =  pallet_table_printer();
+	//presentor =  pallet_table_printer(); //has to crate the table and should be used later on 
 	uint32_t width , height ;
 	width =  bmp_infoheader.image_width;
 	height =  bmp_infoheader.image_height ;
@@ -124,42 +124,8 @@ int user_pixel_input(uint8_t *user_pixel_data , uint32_t  bitcount_pixel ,  stru
 
 	uint8_t spixel ;
 	char input_pixel[100];
-
-	for(int i = 0 ; i<=total_pixel ; i++){
-		printf("ENTER THE COLOUR BIT \n");
-		if(fgets(input_pixel,sizeof(input_pixel),stdin)){
-			perror("INPUT ERROR \n");
-			return -1;
-		};
-
-		spixel =  strtol(input_pixel,NULL,10);
-
-		if(bitcount_pixel ==  1){
-			spixel =  (spixel>0) ? 1 : 0 ;
-			user_pixel_data[i] = spixel ;
-			printf("SAVED\n");
-		};
-
-		if(bitcount_pixel == 2 ){
-			spixel =  (spixel >3 ) ? 3 : spixel ;
-			user_pixel_data[i] = spixel ;
-			printf("SAVED \n");
-		};
-
-		if(bitcount_pixel == 4 ){
-			spixel =  (spixel >15 ) ? 15 : spixel ;
-			user_pixel_data[i] = spixel ;
-			printf("SAVED \n");
-		};
-
-		if(bitcount_pixel == 8 ){
-			spixel =  (spixel >255 ) ? 255 : spixel ;
-			user_pixel_data[i] = spixel ;
-			printf("SAVED \n");
-		};
-	};
-
 	printf("PIXEL DATA CREATED \n");
+
 
 	int total_bits ;
 	if(bitcount_pixel == 1){  // need to change the total_pixel name to total_bits ;
@@ -236,7 +202,6 @@ int bmp_dibheader_creator(uint32_t bitcount_pixel , struct bmp_infoheader *bmp_i
 
 
 int main(){
-	uint32_t bitcount_pixel ;
 	char usr_input[1024];
 	int result ;
         struct  bmp_pixeldata pixel_data_holder;
@@ -263,8 +228,8 @@ int main(){
 	printf("operation completed \n");
 
 	struct pixel_pallet pixel_data[bitcount_pixel] ;
-	uint8_t *user_pixel_data;
 
+	user_pixel_data = (uint8_t *)malloc(bitcount_pixel)
 	result =  user_pixel_input(user_pixel_data , bmp_infoheader,pixel_data_holder);
 };
 

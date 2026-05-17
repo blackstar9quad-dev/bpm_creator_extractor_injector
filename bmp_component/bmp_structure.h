@@ -42,6 +42,14 @@ struct bmp_infoheader{
 	uint32_t bmp_colorimportant ; 
 };
 
+struct pixel_rgb_value{
+	uint8_t red ; 
+	uint8_t green ;
+	uint8_t blue ;
+};
+
+pixel_rgb_value *user_pixel_data[];
+
 struct bmp_pixeldata{
 	uint8_t *pixel_data;
 };

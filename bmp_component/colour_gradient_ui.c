@@ -3,8 +3,55 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
+#include <stdbool.h>
+#include <stdbool.h>
+#include <stdbool.h>
 
 
+
+int interactor(SDL_Event *event ,  int bitcount_pixel ){
+	printf("NOW IN THE INTERACTOR \n");
+	bool value =  true ;
+
+	int i = 0;
+	while(bitcount_pixel <=0){
+		while(SDL_PollEvent(event) != 0){
+			if(event->type == SDL_QUIT){
+				value =  false ;
+				break;
+			}else if(event->type = SDL_MOUSEBUTTONDOWN){
+				if(event->button.button == SDL_BUTTON_LEFT){
+					printf("the left mouse has been pressed \n");
+					printf("positon of the mouse ( x : %d ) ( y : %d ) \n",event->button.x ,  event->button.y);
+					char choice[10] ;
+					if(!fgets(choice,sizeof(choice),stdin)){
+						perror("INPUT ERROR \n");
+						return -1;
+					};
+
+					if(strcmp(choice,"n") == 0){
+						printf("VALUE NOT SAVED \n");
+						continue;
+					}else if(strcmp(choice,"y") == 0){
+						user_pixel_data[i].red = event.button.x;
+						user_pixel_data[i].green = event.button.y;
+						user_pixel.data[i].blue = 128;
+						printf("rgb value save at index : %d ", index);
+
+						break;
+
+					};
+					break;
+				}
+			}
+		};
+
+		bitcount_pixel = bitcount_pixel - 1 ;
+		i+=1;
+	};
+
+	return 1;
+};
 
 int gradient_creator(SDL_Renderer *renderer , int height , int width){
 	printf("Creating the gradient \n");
@@ -86,16 +133,16 @@ int parser(int argc , char *args[] ,  int *height , int *width , char name[100])
 
 
 
-int main(int argc , char *args[]){
+int gradient_maker(int height , int width  , uint32_t total_pixel){
 	SDL_Init(SDL_INIT_VIDEO);
 	printf("SDL INITLIZED \n");
-	int height , width ;
-	char name[100];
+	//int height = 200 , width = 200 ;   // wouild come from the bmp file 
+	char name[] = "gradient";
 
-	if(parser(argc , args, &height , &width , name)<0){
+    /*	if(parser(argc , args, &height , &width , name)<0){
 		printf("OPERATION FAILED \n");
 		return -1;
-	};
+	};*/
 
 	SDL_Window *window ;
 
@@ -113,6 +160,13 @@ int main(int argc , char *args[]){
 	printf("OPERATION SUCCESSFUL \n");
 
 	if(gradient_creator(renderer ,  height ,  width) < 0){
+		printf("OPERATION FAILED \n");
+		return -1;
+	};
+
+	SDL_Event event ;
+
+	if(interactor(&event) < 0){
 		printf("OPERATION FAILED \n");
 		return -1;
 	};
