@@ -7,7 +7,19 @@
 #include <stdbool.h>
 #include <stdbool.h>
 
+int randomizor(uint32_t bitpixel_count, int totalpixel, struct pixel_rgb_value *pixel_data) {
+    printf("RANDOMIZING THE COLORS \n");
 
+    for (int i = 0; i < totalpixel; i++) {
+        pixel_data[i].red   = rand() % 256;
+        pixel_data[i].green = rand() % 256;             
+        pixel_data[i].blue  = 128;
+    }
+
+    printf("random pixel selected for the palette table \n");
+    
+    return 1;
+}
 
 int interactor(SDL_Event *event ,  int bitpixel_count , struct pixel_rgb_value *pixel_data ){
 	printf("NOW IN THE INTERACTOR \n");
@@ -49,6 +61,8 @@ int interactor(SDL_Event *event ,  int bitpixel_count , struct pixel_rgb_value *
 			}
 		};
 	};
+
+	printf(" THE COLOR GRADINET FILE HAS VEEN MADE \n =");
 
 	return 1;
 };
@@ -139,7 +153,12 @@ int gradient_maker(int height , int width  , uint32_t total_pixel, uint32_t bitp
 	//int height = 200 , width = 200 ;   // wouild come from the bmp file 
 	char name[] = "gradient";
 
-	pixel_data =  (struct pixel_rgb_value *)malloc(bitpixel_count);
+	pixel_data =  (struct pixel_rgb_value *)malloc(sizeof(struct pixel_rgb_value) * total_pixel);
+	if(!pixel_data){
+		perror("ALLOICATION ERROR \n");
+		return -1;
+	};
+
 
     /*	if(parser(argc , args, &height , &width , name)<0){
 		printf("OPERATION FAILED \n");
@@ -166,12 +185,29 @@ int gradient_maker(int height , int width  , uint32_t total_pixel, uint32_t bitp
 		return -1;
 	};
 
-	SDL_Event event ;
-
-	if(interactor(&event) < 0){
-		printf("OPERATION FAILED \n");
+	char choice[10];
+	printf("Do u wanna select the colors at random or manually save it (r/m) \n");
+	if(!fgets(choice,sizeof(choice),stdin)){
+		perror("INPUT ERROR \n");
 		return -1;
 	};
+
+	if(strcmp(choice,"r") == 0){
+		if(randomizor(bitpixel_count,totalpixel,pixel_data) <0){
+			printf("OPERATION FAILED \n");
+			return -1;
+		};
+		printf("OPEARION SUCCESSFUL \n");
+
+	}else if(strcmp(choice,"m") == 0){
+        	SDL_Event event ;
+        	if(interactor(&event, bitpixel_count , pixel_data) < 0){
+         		printf("OPERATION FAILED \n");
+         		return -1;
+        	};
+
+		printf("OPERATION SUCCESSFUL \n");
+	}
 
 	sleep(100);
 

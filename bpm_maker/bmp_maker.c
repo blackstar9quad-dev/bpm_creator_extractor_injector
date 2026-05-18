@@ -3,11 +3,57 @@
 #include "../bmp_component/bmp_structure.h"
 
 
-int randomizor( struct bmp_pixeldata *user_pixel_data){
+int randomizor( struct bmp_pixeldata *user_pixel_data , int total_pixel){
+	printf("GENERATING RANDOM COLOR FROM YOUR PALLET .. \n");
+	int random_num ;
+	
+	for(int i =0 ; i< total_pixel ;  i++){
+        	random_num = rand() % (1<<bitpixel_count) ;
+		user_pixel_data->pixel_data[i] = random_num ;
+	};
+
+	printf("USER PIXEL TAKEN IN THE FROM THE PALLET FOR IMAGE CONSIDERATION \n");
+
+	return 1;
+
+
 };
 
-int manual_input( struct bmp_pixeldata *user_pixel_data){
+int manual_input( struct bmp_pixeldata *user_pixel_data , int total_pixel){
+	char choice[1024];
+	printf("STARTING THE MANUAL CHOOSING \n");
+
+	for(int i = 0 ; i<total_pixel ; i++){
+        	if(!fgets(choice,sizeof(choice),stdin)){
+         		perror("INPUT ERROR \n");
+         		return -1;
+        	};
+
+		uint8_t num ;
+
+		num = (uint8_t *)strtol(choice,NULL,10);
+
+		user_pixel_data->pixel_data[i] = num;
+
+	};
+
+	printf("OPEARATION SUCCESSFUL | user input table created \n");
+
+	return 1;	
 };
+
+void pallet_printer(uint32_t bitpixel_count){
+	printf("THE COLOR GRADIETN LIST \n");
+	for(int i = 0 ; i <0 ; i++){
+		printf("red : %d,
+			green : %d,
+blue: 128 \n"
+	};
+
+	printf("----------------------------------------------------------------------------------")
+
+};
+
 
 int user_pixel_creator( uint8_t *user_pixel_data){
 	char choice[10] ;
@@ -277,6 +323,9 @@ int main(){
 		perror("conversion error \n");
 		return -1;
 	};
+
+	int totalpixel =  height * width * bitcount_pixel ;
+
 
 	struct bmp_infoheader bmp_infoheader ;
 	result = bmp_dibheader_creator(bitcount_pixel  , &bmp_infoheader);

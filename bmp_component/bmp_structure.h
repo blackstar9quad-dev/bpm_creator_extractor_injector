@@ -56,6 +56,8 @@ struct bmp_pixeldata{
 	uint8_t *pixel_data;
 };
 
+
+
 #pragma pack(pop)
 
 #endif
